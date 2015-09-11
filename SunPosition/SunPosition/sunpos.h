@@ -187,7 +187,7 @@ inline void SunCoord::Calculate()
 	// to obtain the Heliocentric Longitude in the range
 	// [0, 2 * PI], uncomment the following line:
 
-	// HeliocLongitude = fmod(HeliocLongitude, 2 * PI);
+	//HeliocLongitude = fmod(HeliocLongitude, 2 * PI);
 
 	// END HELIOCENTRIC LONGITUDE CALCULATION
 
@@ -220,7 +220,7 @@ inline void SunCoord::Calculate()
 	// to obtain the local hour angle in the range
 	// [0, 2 * PI], uncomment the following line:
 
-	// HourAngle = fmod(HourAngle, 2 * PI);
+	//HourAngle = fmod(HourAngle, 2 * PI);
 
 	auto c_lat = cos(ObserverLatitude);
 	auto s_lat = sin(ObserverLatitude);

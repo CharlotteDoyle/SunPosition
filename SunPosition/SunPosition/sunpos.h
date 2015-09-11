@@ -59,7 +59,6 @@
 #ifndef SUNPOS_H
 #define SUNPOS_H
 
-#include <iostream>
 #include <cmath>
 
 #ifndef PI
@@ -130,27 +129,27 @@ public: // no access control
 
 // Calculate() definition: the algorithm
 
-void SunCoord::Calculate()
+inline void SunCoord::Calculate()
 {
 	// Calculation of JD and JDE:
 
 	double dYear, dMonth;
 	if (Month <= 2)
 	{
-		dYear = (double)Year - 1.0;
-		dMonth = (double)Month + 12.0;
+		dYear = static_cast<double>(Year) - 1.0;
+		dMonth = static_cast<double>(Month) + 12.0;
 	}
 	else
 	{
-		dYear = (double)Year;
-		dMonth = (double)Month;
+		dYear = static_cast<double>(Year);
+		dMonth = static_cast<double>(Month);
 	}
 
-	double JD_t = (double)trunc(365.25 * (dYear - 2000))
-		+ (double)trunc(30.6001 * (dMonth + 1))
-		+ (double)Day + UT / 24.0 - 1158.5;
+	auto JD_t = static_cast<double>(trunc(365.25 * (dYear - 2000)))
+		+ static_cast<double>(trunc(30.6001 * (dMonth + 1)))
+		+ static_cast<double>(Day) + UT / 24.0 - 1158.5;
 
-	double t = JD_t + Delta_t / 86400;
+	auto t = JD_t + Delta_t / 86400;
 
 	// standard JD and JDE (useless for the
 	// computation, they are computed
@@ -163,7 +162,7 @@ void SunCoord::Calculate()
 
 	// linear increase + annual harmonic
 
-	double ang = 1.72019e-2 * t - .0563;
+	auto ang = 1.72019e-2 * t - .0563;
 	HeliocLongitude = 1.740940 + 1.7202768683e-2 * t +
 		3.34118e-2 * sin(ang) + 3.488e-4 * sin(2 * ang);
 
@@ -181,7 +180,7 @@ void SunCoord::Calculate()
 
 	// Polynomial correction
 
-	double t2 = t / 1000;
+	auto t2 = t / 1000;
 	HeliocLongitude += (((-2.30796e-07 * t2 + 3.7976e-06) * t2
 		- 2.0458e-5) * t2 + 3.976e-05) * t2 * t2;
 
@@ -194,18 +193,18 @@ void SunCoord::Calculate()
 
 	// Correction to longitude due to nutation
 
-	double delta_psi = 8.33e-5 * sin(9.52e-4 * t - 1.173);
+	auto delta_psi = 8.33e-5 * sin(9.52e-4 * t - 1.173);
 
 	// Earth axis inclination
 
-	double epsilon = -6.21e-9 * t + 0.409086 +
+	auto epsilon = -6.21e-9 * t + 0.409086 +
 		4.46e-5 * sin(9.252e-4 * t + .397);
 
 	// Geocentric global solar coordinates:
 
 	GeocSolarLongitude = HeliocLongitude + PI + delta_psi - 9.932e-5;
 
-	double s_lambda = sin(GeocSolarLongitude);
+	auto s_lambda = sin(GeocSolarLongitude);
 
 	RightAscension = atan2(s_lambda* cos(epsilon),
 		cos(GeocSolarLongitude));
@@ -223,14 +222,14 @@ void SunCoord::Calculate()
 
 	// HourAngle = fmod(HourAngle, 2 * PI);
 
-	double c_lat = cos(ObserverLatitude);
-	double s_lat = sin(ObserverLatitude);
-	double c_H = cos(HourAngle);
-	double s_H = sin(HourAngle);
+	auto c_lat = cos(ObserverLatitude);
+	auto s_lat = sin(ObserverLatitude);
+	auto c_H = cos(HourAngle);
+	auto s_H = sin(HourAngle);
 
 	// Parallax correction to Right Ascensition:
 
-	double d_alpha = -4.26e-5 * c_lat * s_H;
+	auto d_alpha = -4.26e-5 * c_lat * s_H;
 	TopocRightAscension = RightAscension + d_alpha;
 	TopocHourAngle = HourAngle - d_alpha;
 
@@ -238,10 +237,10 @@ void SunCoord::Calculate()
 
 	TopocDeclination = Declination - 4.26e-5 * (s_lat -
 		Declination * c_lat);
-	double s_delta_corr = sin(TopocDeclination);
-	double c_delta_corr = cos(TopocDeclination);
-	double c_H_corr = c_H + d_alpha * s_H;
-	double s_H_corr = s_H - d_alpha * c_H;
+	auto s_delta_corr = sin(TopocDeclination);
+	auto c_delta_corr = cos(TopocDeclination);
+	auto c_H_corr = c_H + d_alpha * s_H;
+	auto s_H_corr = s_H - d_alpha * c_H;
 
 	// Solar elevation angle, without
 	// refraction correction:
@@ -252,7 +251,7 @@ void SunCoord::Calculate()
 	// Refraction correction: it is calculated only
 	// if Elevation_no_refrac > elev_min
 
-	const double elev_min = -.01;
+	const auto elev_min = -.01;
 
 	if (Elevation_no_refrac > elev_min)
 		RefractionCorrection =
